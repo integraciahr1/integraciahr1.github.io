@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Найм-трекер</title>
+<meta name="description" content="Цена отклика, регистрации и оплаченного кандидата по каждому объявлению Авито Работы. Статистика Авито, постбеки CPA-сетей и учёт кандидатов в одной Google-таблице.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* Светлая «рабочая» эстетика: серый фон как у таблицы, жёлтый — как отметка маркером, тёмный — шапки таблиц */
+  :root {
+    --bg: #F0F1F4; --card: #FFFFFF; --ink: #21201F; --muted: #6E717A; --line: #E1E3E8;
+    --accent: #FFDB4D; --accent-soft: #FFF4C2; --good: #1F8A4C; --bad: #C2402F; --soft: #F6F7F9;
+    --font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--font); }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* шапка */
+  .nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 18px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; letter-spacing: -0.01em; text-decoration: none; }
+  .logo i { width: 28px; height: 28px; border-radius: 8px; background: var(--ink); display: grid; place-items: center; }
+  .logo i::after { content: ""; width: 12px; height: 12px; border-radius: 3px; background: var(--accent); }
+  .nav nav { display: flex; gap: 22px; font-size: 15px; color: var(--muted); }
+  .nav nav a { text-decoration: none; }
+  .nav nav a:hover { color: var(--ink); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 12px;
+    padding: 13px 20px; font: 700 15px var(--font); text-decoration: none; cursor: pointer; white-space: nowrap; }
+  .btn.y { background: var(--accent); color: var(--ink); }
+  .btn.d { background: var(--ink); color: #fff; }
+  .btn.o { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+  .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+  /* первый экран */
+  .hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items: center; padding-block: 40px 64px; }
+  .eyebrow { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    background: var(--accent-soft); color: #6B5600; padding: 6px 10px; border-radius: 8px; }
+  h1 { font-size: clamp(32px, 4.6vw, 52px); line-height: 1.08; letter-spacing: -0.025em; margin: 18px 0 18px; text-wrap: balance; font-weight: 800; }
+  h1 mark { background: linear-gradient(transparent 58%, var(--accent) 58%); color: inherit; padding: 0 2px; }
+  .lead { font-size: 18px; color: #3E3F44; max-width: 34em; margin: 0 0 26px; }
+  .cta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .fine { color: var(--muted); font-size: 14px; margin-top: 14px; }
+
+  /* макет панели */
+  .mock { background: var(--card); border-radius: 22px; padding: 18px; box-shadow: 0 24px 60px -24px rgba(33,32,31,.28); min-width: 0; }
+  .mock-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .mock-top b { font-size: 16px; }
+  .mock-top span { color: var(--muted); font-size: 13px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .chip { font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; }
+  .chip.on { background: var(--accent); border-color: var(--accent); font-weight: 700; }
+  .row { display: grid; grid-template-columns: 1.6fr repeat(4, 1fr); gap: 6px; align-items: center; padding: 10px 6px; border-top: 1px solid var(--line); font-size: 14px; }
+  .row.h { border-top: 0; color: var(--muted); font-size: 12px; font-weight: 600; }
+  .row div:not(:first-child) { text-align: right; }
+  .row .nm { font-weight: 700; }
+  .row .nm small { display: block; font-weight: 500; color: var(--muted); font-size: 12px; }
+  .pos { color: var(--good); font-weight: 700; } .neg { color: var(--bad); font-weight: 700; }
+  .row.t { background: var(--soft); border-radius: 10px; font-weight: 700; border-top: 0; margin-top: 4px; }
+  .tbl-scroll { overflow-x: auto; }
+  .tbl-scroll > div { min-width: 430px; }
+
+  section { padding-block: 56px; }
+  h2 { font-size: clamp(26px, 3.2vw, 36px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 14px; text-wrap: balance; font-weight: 800; }
+  .sub { color: var(--muted); font-size: 17px; max-width: 40em; margin: 0 0 30px; }
+
+  /* проблема */
+  .problem { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .flow { background: var(--card); border-radius: 18px; padding: 22px; }
+  .flow h3 { margin: 0 0 14px; font-size: 17px; }
+  .steps { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
+  .steps span { background: var(--soft); border-radius: 8px; padding: 7px 10px; }
+  .steps em { font-style: normal; color: var(--muted); }
+  .steps .lost { background: #FBE9E6; color: var(--bad); font-weight: 700; }
+  .steps .ok { background: #E5F4EB; color: var(--good); font-weight: 700; }
+  .flow p { color: var(--muted); font-size: 15px; margin: 14px 0 0; }
+
+  /* возможности */
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .f { background: var(--card); border-radius: 18px; padding: 20px; }
+  .f .ic { width: 40px; height: 40px; border-radius: 11px; background: var(--accent-soft); display: grid; place-items: center; margin-bottom: 14px; }
+  .f .ic svg { width: 22px; height: 22px; stroke: var(--ink); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .f h3 { font-size: 17px; margin: 0 0 6px; }
+  .f p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  /* метрики */
+  .metrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .m { background: var(--card); border-radius: 14px; padding: 14px; }
+  .m b { display: block; font-size: 15px; }
+  .m span { color: var(--muted); font-size: 13px; }
+
+  /* как подключить */
+  .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; counter-reset: s; }
+  .how .st { background: var(--card); border-radius: 18px; padding: 22px; position: relative; }
+  .how .st::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 34px; height: 34px;
+    border-radius: 50%; background: var(--ink); color: var(--accent); font-weight: 800; margin-bottom: 14px; }
+  .how h3 { margin: 0 0 6px; font-size: 17px; }
+  .how p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  /* телефон */
+  .phone-sec { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .phone { width: 280px; max-width: 100%; margin: 0 auto; background: var(--ink); border-radius: 36px; padding: 10px; }
+  .screen { background: var(--bg); border-radius: 28px; padding: 16px 14px 18px; }
+  .screen .t { font-weight: 800; font-size: 16px; margin-bottom: 10px; }
+  .screen label { display: block; font-size: 11px; color: var(--muted); margin: 10px 0 5px; }
+  .screen .seg { display: flex; flex-wrap: wrap; gap: 5px; }
+  .screen .seg span { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; font-size: 12px; }
+  .screen .seg span.on { background: var(--accent); border-color: var(--accent); font-weight: 700; }
+  .screen .in { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 12px; color: var(--muted); }
+  .screen .sv { margin-top: 14px; background: var(--ink); color: #fff; border-radius: 12px; text-align: center; padding: 10px; font-weight: 700; font-size: 13px; }
+  ul.check { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  ul.check li { padding-left: 32px; position: relative; }
+  ul.check li::before { content: ""; position: absolute; left: 0; top: 3px; width: 20px; height: 20px; border-radius: 6px; background: var(--accent); }
+  ul.check li::after { content: ""; position: absolute; left: 7px; top: 7px; width: 5px; height: 9px; border: solid var(--ink); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+
+  /* цены */
+  .prices { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 860px; }
+  .price { background: var(--card); border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 14px; }
+  .price.hl { box-shadow: inset 0 0 0 2px var(--ink); }
+  .price h3 { margin: 0; font-size: 19px; }
+  .price .p { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; }
+  .price .p small { font-size: 15px; font-weight: 600; color: var(--muted); }
+  .price ul.check { font-size: 15px; }
+  .price .btn { margin-top: auto; }
+  .tag { display: inline-block; background: var(--accent); font-size: 12px; font-weight: 800; padding: 4px 8px; border-radius: 6px; align-self: flex-start; }
+
+  /* вопросы */
+  .faq { max-width: 820px; display: grid; gap: 10px; }
+  details { background: var(--card); border-radius: 16px; padding: 4px 20px; }
+  summary { cursor: pointer; font-weight: 700; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; font-weight: 800; font-size: 20px; line-height: 1; }
+  details[open] summary::after { content: "–"; }
+  details p { margin: 0 0 16px; color: #3E3F44; }
+
+  .final { background: var(--ink); color: #fff; border-radius: 26px; padding: 40px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .final h2 { color: #fff; margin: 0 0 6px; }
+  .final p { margin: 0; color: #C9CAD0; }
+  footer { color: var(--muted); font-size: 13px; padding-block: 30px 40px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .hero, .problem, .phone-sec { grid-template-columns: 1fr; }
+    .grid4 { grid-template-columns: 1fr 1fr; }
+    .how { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: repeat(3, 1fr); }
+    .prices { grid-template-columns: 1fr; }
+    .nav nav { display: none; }
+  }
+  @media (max-width: 520px) {
+    .grid4 { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: 1fr 1fr; }
+    section { padding-block: 40px; }
+    .final { padding: 26px; }
+    .hero { padding-block: 16px 40px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="nav">
+    <a class="logo" href="#"><i></i>Найм-трекер</a>
+    <nav><a href="#how">Как работает</a><a href="#inside">Что внутри</a><a href="#price">Цена</a><a href="#faq">Вопросы</a><a href="guide/">Инструкция</a></nav>
+    <a class="btn d" href="#price">Купить</a>
+  </header>
+
+  <!-- Первый экран -->
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Для найма через Авито Работу</span>
+      <h1>Узнайте, сколько стоит <mark>регистрация кандидата</mark> с каждого объявления</h1>
+      <p class="lead">Статистика Авито, постбеки CPA-сетей и учёт кандидатов — в одной Google-таблице. Каждое утро она сама считает цену отклика, регистрации и оплаченного кандидата по каждому направлению.</p>
+      <div class="cta">
+        <a class="btn y" href="#price">Купить — от 4 990 ₽</a>
+        <a class="btn o" href="#how">Как это работает</a>
+      </div>
+      <div class="fine">Разовая оплата, без подписки. Данные остаются в вашей таблице.</div>
+    </div>
+
+    <div class="mock" aria-label="Пример сводки">
+      <div class="mock-top"><b>Сводка за 7 дней</b><span>обновлено сегодня в 8:00</span></div>
+      <div class="chips"><span class="chip">30 дней</span><span class="chip on">7 дней</span><span class="chip">Вчера</span></div>
+      <div class="tbl-scroll"><div>
+        <div class="row h"><div>Направление</div><div>Отклики</div><div>Регистр.</div><div>Цена рег.</div><div>Прибыль</div></div>
+        <div class="row num"><div class="nm">Курьер — Москва<small>2 объявления</small></div><div>9</div><div>4</div><div>412 ₽</div><div class="pos">+6 350 ₽</div></div>
+        <div class="row num"><div class="nm">Склад — Казань<small>1 объявление</small></div><div>5</div><div>2</div><div>535 ₽</div><div class="pos">+930 ₽</div></div>
+        <div class="row num"><div class="nm">Курьер — Самара<small>1 объявление</small></div><div>2</div><div>0</div><div>—</div><div class="neg">−610 ₽</div></div>
+        <div class="row t num"><div>Итого</div><div>16</div><div>6</div><div>648 ₽</div><div class="pos">+6 670 ₽</div></div>
+      </div></div>
+      <div class="fine" style="margin-top:10px">Цифры на макете — пример, не результат.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Проблема -->
+<section style="background: var(--card);">
+  <div class="wrap">
+    <h2>Почему обычный трекер здесь не помогает</h2>
+    <p class="sub">Трекеры считают клики. А с Авито Работы кандидат приходит в чат: переписка, ссылка в мессенджере или СМС, регистрация через несколько дней. Цепочка рвётся, и цена кандидата остаётся неизвестной.</p>
+    <div class="problem">
+      <div class="flow" style="background: var(--bg);">
+        <h3>Как обычно</h3>
+        <div class="steps"><span>Объявление</span><em>→</em><span>Отклик в чат</span><em>→</em><span>Ссылка в WhatsApp</span><em>→</em><span class="lost">? кто зарегистрировался</span></div>
+        <p>Расход Авито в одном кабинете, регистрации — в другом, кандидаты — в переписке. Какое объявление окупается — непонятно.</p>
+      </div>
+      <div class="flow" style="background: var(--bg);">
+        <h3>С Найм-трекером</h3>
+        <div class="steps"><span>Объявление</span><em>→</em><span>Отклик</span><em>→</em><span>Кандидат в таблице</span><em>→</em><span class="ok">Постбек сети</span></div>
+        <p>Расход и отклики подтягиваются из Авито по API, регистрации и выплаты — из постбеков сети, всё сводится по направлению.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Возможности -->
+<section id="inside">
+  <div class="wrap">
+    <h2>Что делает Найм-трекер</h2>
+    <p class="sub">Готовая Google-таблица со встроенными скриптами и панелью для телефона. Ничего не нужно программировать.</p>
+    <div class="grid4">
+      <div class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg></div>
+        <h3>Статистика Авито</h3>
+        <p>Каждое утро по API: показы, просмотры, отклики, избранное и расход по каждому объявлению за вчера.</p>
+      </div>
+      <div class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12h12M12 6l6 6-6 6"/><circle cx="20" cy="12" r="1.5"/></svg></div>
+        <h3>Постбеки любых сетей</h3>
+        <p>Регистрации, холд и выплаты приходят сами. Для Pampadu ссылка уже собрана, для других сетей — впишите макросы.</p>
+      </div>
+      <div class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 11l2 2 4-4"/></svg></div>
+        <h3>Учёт кандидатов</h3>
+        <p>Подходит или нет, причина отказа, отправлена ли ссылка, зарегистрировался ли. Видно, где теряются люди.</p>
+      </div>
+      <div class="f">
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18h3"/></svg></div>
+        <h3>Панель для телефона</h3>
+        <p>Добавить кандидата и посмотреть сводку можно с телефона в пару нажатий, без открытия таблицы.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:40px 0 14px; font-size:19px;">Что считается по каждому направлению</h3>
+    <div class="metrics num">
+      <div class="m"><b>CTR</b><span>показ → просмотр</span></div>
+      <div class="m"><b>CR</b><span>просмотр → отклик</span></div>
+      <div class="m"><b>CPR</b><span>цена отклика</span></div>
+      <div class="m"><b>CPL</b><span>цена регистрации</span></div>
+      <div class="m"><b>CPA</b><span>цена оплаченного</span></div>
+      <div class="m"><b>Profit</b><span>начислено − расход</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Как подключить -->
+<section id="how" style="background: var(--card);">
+  <div class="wrap">
+    <h2>Подключение за 15 минут</h2>
+    <p class="sub">Таблица сама создаёт вкладки, ключи и ежедневную загрузку. Вам нужно ответить на несколько вопросов.</p>
+    <div class="how">
+      <div class="st" style="background: var(--bg);"><h3>Создайте копию</h3><p>Откройте ссылку после оплаты — таблица появится в вашем Google Диске вместе со всеми скриптами.</p></div>
+      <div class="st" style="background: var(--bg);"><h3>Запустите настройку</h3><p>Меню «Найм-трекер» → «Первичная настройка»: введите лицензионный ключ и ключи API из кабинета Авито, опубликуйте веб-приложение по подсказке.</p></div>
+      <div class="st" style="background: var(--bg);"><h3>Вставьте постбек</h3><p>Готовая ссылка появится во вкладке «Сети». Вставьте её в кабинет сети — и регистрации начнут приходить сами.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Телефон -->
+<section>
+  <div class="wrap phone-sec">
+    <div class="phone" aria-label="Пример панели на телефоне">
+      <div class="screen">
+        <div class="t">Новый кандидат</div>
+        <label>Направление</label>
+        <div class="seg"><span class="on">Курьер — Москва</span><span>Склад — Казань</span></div>
+        <label>Откуда</label>
+        <div class="seg"><span class="on">Авито, органика</span><span>Продвижение</span></div>
+        <label>Подходит?</label>
+        <div class="seg"><span class="on">Да</span><span>Нет</span></div>
+        <label>Ссылка отправлена?</label>
+        <div class="seg"><span class="on">Да</span><span>Нет</span></div>
+        <label>Комментарий</label>
+        <div class="in">Отправил ссылку в WhatsApp</div>
+        <div class="sv">Сохранить</div>
+      </div>
+    </div>
+    <div>
+      <h2>Что входит</h2>
+      <ul class="check">
+        <li>Google-таблица со сводкой, кандидатами, направлениями и журналом изменений</li>
+        <li>Загрузка статистики Авито по API каждое утро и история за прошлые дни</li>
+        <li>Приём постбеков: Pampadu настроен, другие сети — по макросам</li>
+        <li>Панель для телефона и компьютера — подключается по QR-коду</li>
+        <li>Готовый набор: курьеры Яндекс Еды в 179 городах со ставками Pampadu для самозанятых</li>
+        <li>Пошаговая инструкция по подключению</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Цены -->
+<section id="price" style="background: var(--card);">
+  <div class="wrap">
+    <h2>Цена</h2>
+    <p class="sub">Разовая оплата, без подписки. Лицензия на одну таблицу; обновления в течение 3 месяцев — бесплатно.</p>
+    <div class="prices">
+      <div class="price" style="background: var(--bg);">
+        <h3>Самостоятельно</h3>
+        <div class="p num">4 990 ₽</div>
+        <ul class="check">
+          <li>Таблица со всеми функциями</li>
+          <li>Пошаговая инструкция</li>
+          <li>Ответы на вопросы в Telegram</li>
+        </ul>
+        <a class="btn d" href="https://t.me/USERNAME">Купить в Telegram</a>
+      </div>
+      <div class="price hl" style="background: var(--bg);">
+        <span class="tag">Удобнее всего</span>
+        <h3>Под ключ</h3>
+        <div class="p num">9 990 ₽</div>
+        <ul class="check">
+          <li>Всё из тарифа «Самостоятельно»</li>
+          <li>Подключим Авито, постбеки и панель вместе с вами по видеосвязи</li>
+          <li>Заведём ваши направления и объявления</li>
+        </ul>
+        <a class="btn y" href="https://t.me/USERNAME">Купить в Telegram</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Вопросы -->
+<section id="faq">
+  <div class="wrap">
+    <h2>Вопросы</h2>
+    <div class="faq">
+      <details><summary>Нужно ли уметь программировать?</summary><p>Нет. Код уже внутри таблицы. Настройка идёт через меню с подсказками: вставить ключи и пару ссылок.</p></details>
+      <details><summary>Какие сети поддерживаются?</summary><p>Любые, которые умеют отправлять постбек (GET-запрос). Для Pampadu ссылка собирается автоматически. Для других сетей нужно вписать макросы из их кабинета — это 5 полей.</p></details>
+      <details><summary>Только для курьеров?</summary><p>Нет. Направление — это любая вакансия в любом городе: курьеры, склады, такси, продажи. Курьеры Яндекс Еды просто добавлены готовым набором.</p></details>
+      <details><summary>Где хранятся данные кандидатов?</summary><p>Только в вашей Google-таблице, на вашем аккаунте. Мы их не видим и никуда не передаём.</p></details>
+      <details><summary>Что нужно от Авито?</summary><p>Ключи API (Client_id и Client_secret) из раздела для профессионалов в кабинете Авито. Без них таблица тоже работает, но статистику Авито придётся вносить вручную.</p></details>
+      <details><summary>Таблица гарантирует доход?</summary><p>Нет. Это инструмент учёта: он показывает, сколько стоит кандидат и какие объявления окупаются. Решения по рекламе принимаете вы.</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="final">
+    <div><h2>Посчитайте свой найм</h2><p>Напишите в Telegram — ответим и пришлём доступ после оплаты.</p></div>
+    <a class="btn y" href="https://t.me/USERNAME">Написать в Telegram</a>
+  </div>
+  <footer>
+    <span>© 2026 Найм-трекер. Самозанятый ФИО, ИНН 000000000000</span>
+    <span><a href="guide/">Инструкция по подключению</a> · Не является продуктом Авито, Яндекса или Pampadu.</span>
+  </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Найм-трекер — подключение</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #F0F1F4; --card: #FFFFFF; --ink: #21201F; --muted: #6E717A; --line: #E1E3E8; --accent: #FFDB4D; --soft: #FFF4C2;
+    --font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--font); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px max(16px, env(safe-area-inset-right, 0px)) 60px max(16px, env(safe-area-inset-left, 0px)); }
+  a { color: inherit; }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; text-decoration: none; }
+  .logo i { width: 26px; height: 26px; border-radius: 8px; background: var(--ink); display: grid; place-items: center; }
+  .logo i::after { content: ""; width: 11px; height: 11px; border-radius: 3px; background: var(--accent); }
+  h1 { font-size: clamp(28px, 4vw, 38px); line-height: 1.15; letter-spacing: -0.02em; margin: 26px 0 8px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .toc { background: var(--card); border-radius: 16px; padding: 16px 20px; margin-bottom: 20px; }
+  .toc ol { margin: 0; padding-left: 20px; }
+  .step { background: var(--card); border-radius: 18px; padding: 22px; margin-bottom: 14px; }
+  .step h2 { font-size: 20px; margin: 0 0 10px; display: flex; gap: 12px; align-items: center; }
+  .step h2 span { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--ink); color: var(--accent); display: grid; place-items: center; font-size: 15px; }
+  .step ol, .step ul { margin: 8px 0; padding-left: 22px; }
+  .step li { margin: 4px 0; }
+  .note { background: var(--soft); border-radius: 12px; padding: 12px 14px; margin: 12px 0 0; font-size: 15px; }
+  code { background: #ECEDF1; border-radius: 6px; padding: 2px 6px; font-size: 14px; word-break: break-all; }
+  b.ui { background: #ECEDF1; border-radius: 6px; padding: 1px 6px; font-weight: 700; }
+  details { background: var(--card); border-radius: 14px; padding: 4px 18px; margin-bottom: 8px; }
+  summary { cursor: pointer; font-weight: 700; padding: 12px 0; }
+  details p { margin: 0 0 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="logo" href="../"><i></i>Найм-трекер</a>
+  <h1>Подключение за 15 минут</h1>
+  <p class="sub">Делайте шаги по порядку на компьютере. Если где-то застряли — пришлите скриншот в Telegram, поможем.</p>
+
+  <div class="toc"><ol>
+    <li><a href="#s1">Создать свою копию таблицы</a></li>
+    <li><a href="#s2">Первичная настройка и ключи Авито</a></li>
+    <li><a href="#s3">Опубликовать веб-приложение</a></li>
+    <li><a href="#s4">Вставить адрес и проверить</a></li>
+    <li><a href="#s5">Завести направления</a></li>
+    <li><a href="#s6">Подключить постбек сети</a></li>
+    <li><a href="#s7">Панель на компьютере и телефоне</a></li>
+  </ol></div>
+
+  <div class="step" id="s1"><h2><span>1</span>Создать свою копию</h2>
+    <ol>
+      <li>Откройте ссылку, которую прислали после оплаты, и нажмите <b class="ui">Создать копию</b>.</li>
+      <li>Копия откроется в вашем Google Диске. Через 5–10 секунд вверху появится меню <b class="ui">Найм-трекер</b> (если нет — обновите страницу).</li>
+    </ol>
+  </div>
+
+  <div class="step" id="s2"><h2><span>2</span>Первичная настройка</h2>
+    <ol>
+      <li>Меню <b class="ui">Найм-трекер → 1. Первичная настройка</b>.</li>
+      <li>Google попросит разрешение. Выберите свой аккаунт → <b class="ui">Дополнительные настройки</b> → <b class="ui">Перейти на страницу…</b> → <b class="ui">Разрешить</b>.</li>
+      <li>Введите <b>лицензионный ключ</b> из письма или сообщения после оплаты (вида <code>NT-XXXX-XXXX</code>). Один ключ работает в одной таблице.</li>
+      <li>Таблица спросит ключи Авито — <b>Client_id</b> и <b>Client_secret</b>. Где взять: в кабинете Авито раздел для профессионалов → API / Интеграции → получить ключи.</li>
+    </ol>
+    <div class="note">Предупреждение «Приложение не проверено Google» — нормально: это скрипт внутри вашей собственной таблицы, он работает только с ней и с Авито. Ключи хранятся в настройках скрипта, а не в ячейках.</div>
+  </div>
+
+  <div class="step" id="s3"><h2><span>3</span>Опубликовать веб-приложение</h2>
+    <p>Это нужно, чтобы таблица принимала постбеки и работала панель.</p>
+    <ol>
+      <li>Меню <b class="ui">Расширения → Apps Script</b>.</li>
+      <li>Справа вверху <b class="ui">Начать развертывание</b> → <b class="ui">Новое развертывание</b>.</li>
+      <li>Шестерёнка у «Выберите тип» → <b class="ui">Веб-приложение</b>.</li>
+      <li><b>Запуск от имени:</b> Я. <b>У кого есть доступ:</b> Все. Нажмите <b class="ui">Начать развертывание</b>.</li>
+      <li>Скопируйте <b>URL веб-приложения</b> — он заканчивается на <code>/exec</code>.</li>
+    </ol>
+  </div>
+
+  <div class="step" id="s4"><h2><span>4</span>Вставить адрес и проверить</h2>
+    <ol>
+      <li>В таблице: <b class="ui">Найм-трекер → 2. Вставить адрес веб-приложения</b>, вставьте URL.</li>
+      <li>Появится «Готово!» — значит всё связалось. Что ещё осталось сделать, видно во вкладке <b>Настройки</b> → «Готовность».</li>
+      <li>Для уверенности: <b class="ui">Найм-трекер → 3. Проверить постбек</b>. Должно быть «Постбеки принимаются ✅».</li>
+      <li>Нужна статистика за прошлые дни? <b class="ui">Найм-трекер → Загрузить историю Авито</b>, укажите дату. Грузится в фоне, таблицу можно закрыть.</li>
+    </ol>
+  </div>
+
+  <div class="step" id="s5"><h2><span>5</span>Завести направления</h2>
+    <p>Направление — это вакансия в городе, например «Курьер — Москва». Вкладка <b>Направления</b>:</p>
+    <ul>
+      <li><b>Работаю</b> — галочка: направление появится в сводке и на панели.</li>
+      <li><b>ID объявлений Авито</b> — номер из адреса объявления (цифры в конце ссылки). Несколько — через запятую.</li>
+      <li><b>Метка sub1</b> — короткое слово латиницей. Ставьте его в sub1 своей партнёрской ссылки для этого направления.</li>
+      <li><b>Выплата</b> и <b>EPL</b> — из карточки оффера в сети.</li>
+    </ul>
+    <div class="note">Работаете с курьерами Яндекс Еды через Pampadu? Меню <b class="ui">Найм-трекер → Добавить направления: курьеры Яндекс Еды</b> — добавит 179 городов со ставками. Отметьте галочкой только свои.</div>
+  </div>
+
+  <div class="step" id="s6"><h2><span>6</span>Подключить постбек сети</h2>
+    <ol>
+      <li>Вкладка <b>Сети</b>, столбец <b>Ссылка постбека</b>.</li>
+      <li><b>Pampadu:</b> ссылка уже готова — скопируйте её в кабинете Pampadu в настройку постбека, метод GET.</li>
+      <li><b>Другая сеть:</b> откройте в её кабинете настройку постбека, там список макросов (слова в фигурных скобках). Впишите в строку сети макросы ID конверсии, статуса, выплаты и sub1 — ссылка соберётся сама.</li>
+      <li>Если статусы сети называются необычно (например «1» и «2»), впишите их в столбцы «Оплачено / В холде / Отклонено».</li>
+    </ol>
+  </div>
+
+  <div class="step" id="s7"><h2><span>7</span>Панель на компьютере и телефоне</h2>
+    <ol>
+      <li>В таблице: <b class="ui">Найм-трекер → Открыть панель</b> → кнопка <b class="ui">Открыть панель</b>. Панель откроется на компьютере уже подключённой.</li>
+      <li>Внизу сводки нажмите <b class="ui">Подключить телефон</b> и наведите камеру телефона на QR-код — панель откроется на телефоне и подключится сама.</li>
+      <li>Добавьте на главный экран: iPhone — «Поделиться» → «На экран Домой»; Android — ⋮ → «Добавить на главный экран».</li>
+    </ol>
+    <div class="note">QR-код и ссылку для подключения никому не показывайте — по ним можно смотреть и менять вашу таблицу.</div>
+  </div>
+
+  <h2 style="margin:30px 0 12px">Если что-то не так</h2>
+  <details><summary>Ключ не принят</summary><p>Проверьте, что ключ введён полностью, вида NT-XXXX-XXXX. «Ключ уже используется в другой таблице» — значит, он активирован в другой копии; если вы пересоздали таблицу, напишите нам — сбросим привязку.</p></details>
+  <details><summary>Где вкладки «Постбеки», «Конверсии», «Авито по дням»?</summary><p>Они скрыты, чтобы не мешать. Меню «Найм-трекер» → «Показать подробные данные».</p></details>
+  <details><summary>Нет меню «Найм-трекер»</summary><p>Обновите страницу и подождите 10 секунд. Меню появляется только в вашей копии, не в исходной таблице.</p></details>
+  <details><summary>«Google просит войти» при вставке адреса</summary><p>В развертывании выбран неверный доступ. Расширения → Apps Script → Развертывание → Управление развертываниями → карандаш → «У кого есть доступ: Все» → Версия «Новая версия» → Развернуть.</p></details>
+  <details><summary>Постбек не принят / в «Постбеках» пусто</summary><p>Проверьте, что ссылка в кабинете сети скопирована целиком (с token=…), метод GET. Если меняли что-то в Apps Script — опубликуйте «Новую версию» развертывания.</p></details>
+  <details><summary>Регистрация попала в «? метка»</summary><p>Метка sub1 в ссылке не совпала ни с одним направлением. Впишите её в столбец «Метка sub1» нужного направления.</p></details>
+  <details><summary>Авито не подключилось</summary><p>Запустите «1. Первичная настройка» ещё раз и проверьте ключи. Ответы Авито видны во вкладке «Авито — ответы API».</p></details>
+  <details><summary>Панель пишет «Неверный ключ»</summary><p>Нажмите внизу сводки «Сменить ссылку» и вставьте ссылку из вкладки «Настройки» заново.</p></details>
+</div>
+</body>
+</html>

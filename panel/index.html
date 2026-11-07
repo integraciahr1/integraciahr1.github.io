@@ -304,7 +304,7 @@ function renderSum() {
     '</div><div class="note">Период: ' + dmy(p.from) + ' — ' + dmy(p.to) + '. Авито обновляется каждое утро за вчерашний день.</div>';
   DATA.summary.forEach(s => {
     const profitCls = Number(s.profit) > 0 ? 'pos' : Number(s.profit) < 0 ? 'neg' : '';
-    h += `<div class="card"><h2><span>${esc(s.city)}${Number(s.pay5) ? `<small class="pay"> · ${rub(s.pay5)} за целевое</small>` : ''}</span><small>потрачено ${rub(s.spend)}</small></h2>
+    h += `<div class="card"><h2><span>${esc(s.city)}${Number(s.pay5) ? `<small class="pay"> · ${rub(s.pay5)} за целевое</small>` : ''}</span><small>потрачено ${rub(s.spend)}${Number(s.promo) ? ` · на продвижение ${rub(s.promo)}` : ''}</small></h2>
       <div class="grid">
         <div class="m"><b>${num(s.impressions)}</b><span>показы</span></div>
         <div class="m"><b>${num(s.views)}</b><span>просмотры · ${pct(s.ctr)}</span></div>

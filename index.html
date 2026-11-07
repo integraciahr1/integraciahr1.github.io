@@ -94,6 +94,15 @@
   .m b { display: block; font-size: 15px; }
   .m span { color: var(--muted); font-size: 13px; }
 
+  /* три части */
+  .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .pl { background: var(--card); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 6px; }
+  .pl.hl { box-shadow: inset 0 0 0 2px var(--ink); }
+  .pl-n { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; font-weight: 800; margin-bottom: 8px; }
+  .pl h3 { margin: 0; font-size: 20px; }
+  .pl-lead { margin: 0 0 12px; color: var(--muted); }
+  .pl ul.check { font-size: 15px; }
+
   /* как подключить */
   .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; counter-reset: s; }
   .how .st { background: var(--card); border-radius: 18px; padding: 22px; position: relative; }
@@ -147,6 +156,7 @@
     .hero, .problem, .phone-sec { grid-template-columns: 1fr; }
     .grid4 { grid-template-columns: 1fr 1fr; }
     .how { grid-template-columns: 1fr; }
+    .pillars { grid-template-columns: 1fr; }
     .metrics { grid-template-columns: repeat(3, 1fr); }
     .prices { grid-template-columns: 1fr; }
     .nav nav { display: none; }
@@ -166,16 +176,16 @@
 <div class="wrap">
   <header class="nav">
     <a class="logo" href="#"><i></i>Найм-трекер</a>
-    <nav><a href="#how">Как работает</a><a href="#inside">Что внутри</a><a href="#price">Цена</a><a href="#faq">Вопросы</a><a href="guide/">Инструкция</a></nav>
+    <nav><a href="#system">Состав</a><a href="#how">Как работает</a><a href="#inside">Что внутри</a><a href="#price">Цена</a><a href="#faq">Вопросы</a><a href="guide/">Инструкция</a></nav>
     <a class="btn d" href="#price">Купить</a>
   </header>
 
   <!-- Первый экран -->
   <div class="hero">
     <div>
-      <span class="eyebrow">Для найма через Авито Работу</span>
-      <h1>Узнайте, сколько стоит <mark>регистрация кандидата</mark> с каждого объявления</h1>
-      <p class="lead">Статистика Авито, постбеки CPA-сетей и учёт кандидатов — в одной Google-таблице. Каждое утро она сама считает цену отклика, регистрации и оплаченного кандидата по каждому направлению.</p>
+      <span class="eyebrow">Учёт найма через Авито Работу</span>
+      <h1>Каждое утро видно, какой город и какое продвижение <mark>окупаются</mark></h1>
+      <p class="lead">Google-таблица и панель для телефона, которые сами собирают статистику Авито и постбеки CPA-сетей. Расход, отклики, кандидаты, регистрации и выплаты — по каждому городу, объявлению и продвижению, без ручного переноса цифр.</p>
       <div class="cta">
         <a class="btn y" href="#price">Купить — от 4 990 ₽</a>
         <a class="btn o" href="#how">Как это работает</a>
@@ -218,10 +228,52 @@
   </div>
 </section>
 
+<section id="system">
+  <div class="wrap">
+    <h2>Что входит</h2>
+    <p class="sub">Таблица считает, панель даёт работать с телефона, готовые настройки и поддержка помогают запуститься за 15 минут.</p>
+    <div class="pillars">
+      <div class="pl">
+        <div class="pl-n">1</div>
+        <h3>Google-таблица</h3>
+        <p class="pl-lead">Считает всё сама</p>
+        <ul class="check">
+          <li>Статистика Авито по API каждое утро</li>
+          <li>Новые объявления подтягиваются сами</li>
+          <li>Постбеки любых CPA-сетей</li>
+          <li>Окупаемость по городам, объявлениям, продвижениям</li>
+        </ul>
+      </div>
+      <div class="pl hl">
+        <div class="pl-n">2</div>
+        <h3>Панель</h3>
+        <p class="pl-lead">Телефон и компьютер</p>
+        <ul class="check">
+          <li>Сводка за 30 дней, неделю или вчера</li>
+          <li>Кандидат записан за 10 секунд прямо в переписке</li>
+          <li>Подключение по QR-коду, без входа в Google</li>
+          <li>Иконка на главном экране, как у приложения</li>
+        </ul>
+      </div>
+      <div class="pl">
+        <div class="pl-n">3</div>
+        <h3>Настройки и поддержка</h3>
+        <p class="pl-lead">Запуск за 15 минут</p>
+        <ul class="check">
+          <li>Постбек Pampadu собран, для других сетей — 5 полей</li>
+          <li>Ставки по 179 городам для курьеров Яндекс Еды</li>
+          <li>Ответы в Telegram, настройка по видеосвязи в «Под ключ»</li>
+          <li>Обновления 3 месяца: новые сети и функции</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Возможности -->
 <section id="inside">
   <div class="wrap">
-    <h2>Что делает Найм-трекер</h2>
+    <h2>Что делает инструмент</h2>
     <p class="sub">Готовая Google-таблица со встроенными скриптами и панелью для телефона. Ничего не нужно программировать.</p>
     <div class="grid4">
       <div class="f">
@@ -314,7 +366,8 @@
         <h3>Самостоятельно</h3>
         <div class="p num">4 990 ₽</div>
         <ul class="check">
-          <li>Таблица со всеми функциями</li>
+          <li>Таблица и панель со всеми функциями</li>
+          <li>Готовые настройки: Pampadu, 179 городов</li>
           <li>Пошаговая инструкция</li>
           <li>Ответы на вопросы в Telegram</li>
         </ul>
@@ -345,6 +398,7 @@
       <details><summary>Только для курьеров?</summary><p>Нет. Направление — это любая вакансия в любом городе: курьеры, склады, такси, продажи. Курьеры Яндекс Еды просто добавлены готовым набором.</p></details>
       <details><summary>Где хранятся данные кандидатов?</summary><p>Только в вашей Google-таблице, на вашем аккаунте. Мы их не видим и никуда не передаём.</p></details>
       <details><summary>Что нужно от Авито?</summary><p>Ключи API (Client_id и Client_secret) из раздела для профессионалов в кабинете Авито. Без них таблица тоже работает, но статистику Авито придётся вносить вручную.</p></details>
+      <details><summary>Чем это лучше обычной таблицы?</summary><p>В обычной таблице цифры переносят руками из двух кабинетов, и на это уходит время каждый день. Здесь статистика Авито и постбеки сети приходят сами, окупаемость по каждому городу и продвижению считается автоматически, а кандидатов можно записывать с телефона.</p></details>
       <details><summary>Таблица гарантирует доход?</summary><p>Нет. Это инструмент учёта: он показывает, сколько стоит кандидат и какие объявления окупаются. Решения по рекламе принимаете вы.</p></details>
     </div>
   </div>
@@ -352,7 +406,7 @@
 
 <div class="wrap">
   <div class="final">
-    <div><h2>Посчитайте свой найм</h2><p>Напишите в Telegram — ответим и пришлём доступ после оплаты.</p></div>
+    <div><h2>Начните видеть, что окупается</h2><p>Напишите в Telegram — ответим и пришлём доступ после оплаты.</p></div>
     <a class="btn y" href="https://t.me/kntrv">Написать в Telegram</a>
   </div>
   <footer>
